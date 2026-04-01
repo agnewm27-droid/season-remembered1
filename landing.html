@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Season Remembered — Youth Sports Memory Books</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #fdf6ec;
+    --warm-white: #fefcf8;
+    --gold: #c8922a;
+    --gold-light: #e8b84b;
+    --amber: #f59e0b;
+    --dirt: #6b3f1f;
+    --grass: #2d5a27;
+    --dark: #1a1209;
+    --text: #2c1f0e;
+    --muted: #8a6e4b;
+    --border: #e8d9c0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 18px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(253,246,236,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px; font-weight: 900;
+    color: var(--dirt);
+    letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-cta {
+    background: var(--dirt); color: var(--cream);
+    padding: 10px 24px; border-radius: 4px;
+    font-weight: 700; font-size: 14px;
+    text-decoration: none; letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--gold); color: var(--dark); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 100px 80px 60px;
+    position: relative;
+    overflow: hidden;
+    gap: 60px;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 70% 50%, rgba(200,146,42,0.08) 0%, transparent 70%),
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 40px,
+        rgba(200,146,42,0.025) 40px,
+        rgba(200,146,42,0.025) 41px
+      );
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(200,146,42,0.12);
+    border: 1px solid rgba(200,146,42,0.3);
+    padding: 7px 16px; border-radius: 100px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 28px;
+    opacity: 0; animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+  .hero-badge::before { content: '⚾'; font-size: 14px; }
+
+  .hero-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(44px, 5vw, 72px);
+    font-weight: 900;
+    line-height: 1.05;
+    color: var(--dark);
+    margin-bottom: 24px;
+    opacity: 0; animation: fadeUp 0.6s ease 0.2s forwards;
+  }
+  .hero-headline em {
+    font-style: italic;
+    color: var(--gold);
+    display: block;
+  }
+
+  .hero-sub {
+    font-size: 18px; line-height: 1.65;
+    color: var(--muted); font-weight: 300;
+    max-width: 460px;
+    margin-bottom: 40px;
+    opacity: 0; animation: fadeUp 0.6s ease 0.3s forwards;
+  }
+  .hero-sub strong { color: var(--text); font-weight: 700; }
+
+  .hero-actions {
+    display: flex; align-items: center; gap: 20px;
+    opacity: 0; animation: fadeUp 0.6s ease 0.4s forwards;
+  }
+
+  .btn-primary {
+    background: var(--dirt); color: var(--cream);
+    padding: 16px 36px; border-radius: 4px;
+    font-weight: 900; font-size: 15px;
+    text-decoration: none; letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    box-shadow: 0 8px 30px rgba(107,63,31,0.3);
+  }
+  .btn-primary:hover {
+    background: var(--gold); color: var(--dark);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(200,146,42,0.4);
+  }
+
+  .btn-ghost {
+    color: var(--muted); font-size: 14px; font-weight: 700;
+    text-decoration: none; letter-spacing: 0.04em;
+    display: flex; align-items: center; gap: 6px;
+    transition: color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--dirt); }
+
+  .hero-social-proof {
+    margin-top: 40px;
+    display: flex; align-items: center; gap: 14px;
+    opacity: 0; animation: fadeUp 0.6s ease 0.5s forwards;
+  }
+  .avatars { display: flex; }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 2px solid var(--cream);
+    margin-left: -10px; first-child { margin-left: 0; }
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    background: var(--border);
+  }
+  .avatar:first-child { margin-left: 0; }
+  .social-text { font-size: 13px; color: var(--muted); line-height: 1.4; }
+  .social-text strong { color: var(--text); display: block; }
+
+  /* ── HERO VISUAL ── */
+  .hero-visual {
+    position: relative;
+    opacity: 0; animation: fadeUp 0.7s ease 0.3s forwards;
+  }
+
+  .book-mockup {
+    background: white;
+    border-radius: 8px;
+    box-shadow:
+      0 2px 0 1px rgba(0,0,0,0.05),
+      0 20px 60px rgba(107,63,31,0.2),
+      0 60px 120px rgba(107,63,31,0.12);
+    overflow: hidden;
+    transform: perspective(1000px) rotateY(-6deg) rotateX(2deg);
+    transition: transform 0.4s ease;
+  }
+  .book-mockup:hover {
+    transform: perspective(1000px) rotateY(-2deg) rotateX(1deg);
+  }
+
+  .book-cover {
+    background: linear-gradient(135deg, #1a3a5c 0%, #0d2136 60%, #6b3f1f 100%);
+    padding: 32px 28px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .book-cover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      45deg, transparent, transparent 8px,
+      rgba(255,255,255,0.02) 8px, rgba(255,255,255,0.02) 9px
+    );
+  }
+  .book-cover-tag {
+    font-size: 9px; letter-spacing: 0.2em; font-weight: 700;
+    color: rgba(232,184,75,0.7); text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .book-cover-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 900;
+    color: white; line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .book-cover-sub {
+    font-size: 12px; color: rgba(255,255,255,0.5);
+    font-weight: 300;
+  }
+  .book-cover-number {
+    position: absolute; right: 28px; top: 28px;
+    font-family: 'Playfair Display', serif;
+    font-size: 64px; font-weight: 900;
+    color: rgba(232,184,75,0.15); line-height: 1;
+  }
+  .book-cover-season {
+    margin-top: 20px;
+    display: inline-block;
+    background: rgba(232,184,75,0.15);
+    border: 1px solid rgba(232,184,75,0.3);
+    padding: 5px 12px; border-radius: 2px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.15em;
+    color: var(--gold-light); text-transform: uppercase;
+  }
+
+  .book-pages {
+    background: white;
+    padding: 20px 24px;
+  }
+
+  .player-entry {
+    padding: 14px 0;
+    border-bottom: 1px solid #f0ebe3;
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .player-entry:last-child { border-bottom: none; }
+
+  .player-number-badge {
+    width: 36px; height: 36px;
+    background: var(--dirt);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 15px; font-weight: 900;
+    color: var(--cream);
+    flex-shrink: 0;
+  }
+
+  .player-name-line {
+    font-weight: 900; font-size: 13px;
+    color: var(--dark); margin-bottom: 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .player-pos { font-size: 10px; color: var(--muted); font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; }
+
+  .player-text-preview {
+    font-size: 11px; color: var(--muted);
+    line-height: 1.6; font-weight: 300;
+  }
+
+  .floating-badge {
+    position: absolute;
+    background: white;
+    border-radius: 10px;
+    padding: 12px 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    font-size: 12px;
+    animation: float 3s ease-in-out infinite;
+  }
+  .floating-badge.top-right {
+    top: -20px; right: -30px;
+    animation-delay: 0s;
+  }
+  .floating-badge.bottom-left {
+    bottom: 30px; left: -40px;
+    animation-delay: 1.5s;
+  }
+  .badge-emoji { font-size: 20px; margin-bottom: 4px; }
+  .badge-label { font-weight: 700; color: var(--dark); font-size: 11px; }
+  .badge-sub { color: var(--muted); font-size: 10px; }
+
+  /* ── HOW IT WORKS ── */
+  .section {
+    padding: 100px 80px;
+  }
+  .section-label {
+    font-size: 12px; letter-spacing: 0.2em; font-weight: 700;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 900; line-height: 1.1;
+    color: var(--dark);
+    margin-bottom: 16px;
+  }
+  .section-sub {
+    font-size: 17px; color: var(--muted);
+    font-weight: 300; line-height: 1.7;
+    max-width: 540px;
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 60px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .how-step {
+    background: var(--warm-white);
+    padding: 40px 36px;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .how-step:hover { background: white; }
+
+  .step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 72px; font-weight: 900;
+    color: rgba(200,146,42,0.1);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .step-icon {
+    font-size: 28px; margin-bottom: 14px;
+    display: block;
+  }
+  .step-title {
+    font-weight: 900; font-size: 18px;
+    color: var(--dark); margin-bottom: 10px;
+  }
+  .step-text {
+    font-size: 14px; color: var(--muted);
+    line-height: 1.7; font-weight: 300;
+  }
+
+  /* ── SAMPLE PROFILE ── */
+  .sample-section {
+    background: var(--dark);
+    padding: 100px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .sample-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 20% 50%, rgba(200,146,42,0.08) 0%, transparent 60%);
+  }
+  .sample-section .section-title { color: var(--cream); }
+  .sample-section .section-sub { color: rgba(253,246,236,0.5); }
+  .sample-section .section-label { color: var(--gold-light); }
+
+  .sample-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .sample-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .sample-card:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(200,146,42,0.3);
+    transform: translateY(-4px);
+  }
+  .sample-card::before {
+    content: '"';
+    position: absolute; top: -10px; right: 20px;
+    font-family: 'Playfair Display', serif;
+    font-size: 120px; font-weight: 900;
+    color: rgba(200,146,42,0.06); line-height: 1;
+  }
+
+  .sample-player-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 20px;
+  }
+  .sample-player-num {
+    width: 48px; height: 48px;
+    background: var(--gold);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 20px; font-weight: 900; color: var(--dark);
+  }
+  .sample-player-name {
+    font-weight: 900; font-size: 18px; color: var(--cream);
+  }
+  .sample-player-pos {
+    font-size: 12px; color: rgba(253,246,236,0.4);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .sample-text {
+    font-size: 14px; line-height: 1.8;
+    color: rgba(253,246,236,0.65); font-weight: 300;
+    font-style: italic;
+  }
+  .sample-sport-tag {
+    display: inline-block; margin-top: 16px;
+    background: rgba(200,146,42,0.15);
+    border: 1px solid rgba(200,146,42,0.25);
+    padding: 4px 10px; border-radius: 2px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+    color: var(--gold-light); text-transform: uppercase;
+  }
+
+  /* ── PRICING ── */
+  .pricing-section {
+    padding: 100px 80px;
+    background: var(--warm-white);
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .pricing-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 36px 32px;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .pricing-card:hover {
+    box-shadow: 0 20px 60px rgba(107,63,31,0.12);
+    transform: translateY(-4px);
+  }
+  .pricing-card.featured {
+    background: var(--dark);
+    border-color: var(--gold);
+    box-shadow: 0 20px 60px rgba(107,63,31,0.2);
+  }
+
+  .pricing-tag {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--gold); color: var(--dark);
+    padding: 4px 14px; border-radius: 100px;
+    font-size: 11px; font-weight: 900; letter-spacing: 0.1em;
+    text-transform: uppercase; white-space: nowrap;
+  }
+
+  .pricing-name {
+    font-weight: 900; font-size: 14px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .pricing-card.featured .pricing-name { color: rgba(253,246,236,0.5); }
+
+  .pricing-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px; font-weight: 900;
+    color: var(--dark); line-height: 1;
+    margin-bottom: 4px;
+  }
+  .pricing-card.featured .pricing-price { color: var(--cream); }
+  .pricing-price sup { font-size: 24px; vertical-align: super; }
+
+  .pricing-desc {
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 28px; line-height: 1.5;
+    font-weight: 300;
+  }
+  .pricing-card.featured .pricing-desc { color: rgba(253,246,236,0.5); }
+
+  .pricing-features {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 10px;
+    margin-bottom: 32px;
+  }
+  .pricing-features li {
+    display: flex; gap: 10px;
+    font-size: 14px; color: var(--text);
+    align-items: flex-start; line-height: 1.4;
+  }
+  .pricing-card.featured .pricing-features li { color: rgba(253,246,236,0.8); }
+  .pricing-features li::before {
+    content: '✓';
+    color: var(--grass); font-weight: 900; flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .pricing-card.featured .pricing-features li::before { color: var(--gold-light); }
+
+  .btn-pricing {
+    display: block; width: 100%; text-align: center;
+    padding: 14px; border-radius: 4px;
+    font-weight: 900; font-size: 14px; letter-spacing: 0.06em;
+    text-transform: uppercase; text-decoration: none;
+    transition: all 0.2s;
+    border: 2px solid var(--dirt); color: var(--dirt);
+    background: transparent;
+  }
+  .btn-pricing:hover { background: var(--dirt); color: var(--cream); }
+  .pricing-card.featured .btn-pricing {
+    background: var(--gold); color: var(--dark);
+    border-color: var(--gold);
+  }
+  .pricing-card.featured .btn-pricing:hover {
+    background: var(--gold-light); border-color: var(--gold-light);
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials {
+    padding: 100px 80px;
+    background: var(--cream);
+  }
+
+  .testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .testimonial-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    position: relative;
+  }
+
+  .stars {
+    color: var(--gold); font-size: 16px;
+    margin-bottom: 16px; letter-spacing: 2px;
+  }
+
+  .testimonial-text {
+    font-size: 15px; line-height: 1.75;
+    color: var(--text); font-style: italic;
+    margin-bottom: 24px; font-weight: 300;
+  }
+
+  .testimonial-author {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .author-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .author-name {
+    font-weight: 900; font-size: 14px; color: var(--dark);
+  }
+  .author-role {
+    font-size: 12px; color: var(--muted); margin-top: 2px;
+  }
+
+  /* ── FAQ ── */
+  .faq-section {
+    padding: 100px 80px;
+    background: var(--warm-white);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .faq-list { display: flex; flex-direction: column; gap: 2px; }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+  }
+  .faq-q {
+    padding: 20px 0;
+    font-weight: 700; font-size: 16px;
+    color: var(--dark); cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    transition: color 0.2s;
+    user-select: none;
+  }
+  .faq-q:hover { color: var(--gold); }
+  .faq-q .arrow {
+    font-size: 12px; color: var(--muted);
+    transition: transform 0.3s;
+    flex-shrink: 0; margin-left: 16px;
+  }
+  .faq-item.open .faq-q { color: var(--gold); }
+  .faq-item.open .arrow { transform: rotate(180deg); }
+  .faq-a {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    font-size: 14px; color: var(--muted); line-height: 1.7;
+    font-weight: 300;
+  }
+  .faq-item.open .faq-a {
+    max-height: 200px;
+    padding-bottom: 20px;
+  }
+
+  /* ── FINAL CTA ── */
+  .final-cta {
+    background: var(--dirt);
+    padding: 100px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 50% 50%, rgba(232,184,75,0.1) 0%, transparent 70%),
+      repeating-linear-gradient(
+        45deg, transparent, transparent 40px,
+        rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px
+      );
+  }
+
+  .final-cta .section-label { color: var(--gold-light); }
+  .final-cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 900; line-height: 1.1;
+    color: var(--cream);
+    margin: 16px 0 20px;
+    position: relative;
+  }
+  .final-cta-sub {
+    font-size: 17px; color: rgba(253,246,236,0.6);
+    font-weight: 300; max-width: 480px;
+    margin: 0 auto 40px; line-height: 1.7;
+    position: relative;
+  }
+  .final-cta .btn-primary {
+    background: var(--gold); color: var(--dark);
+    box-shadow: 0 8px 40px rgba(232,184,75,0.4);
+    position: relative;
+  }
+  .final-cta .btn-primary:hover {
+    background: var(--gold-light);
+    box-shadow: 0 12px 50px rgba(232,184,75,0.5);
+  }
+  .final-guarantee {
+    margin-top: 24px;
+    font-size: 13px; color: rgba(253,246,236,0.4);
+    position: relative;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--dark);
+    padding: 40px 80px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: 18px; color: var(--cream);
+  }
+  .footer-logo span { color: var(--gold); }
+  .footer-links {
+    display: flex; gap: 28px;
+  }
+  .footer-links a {
+    color: rgba(253,246,236,0.3); font-size: 13px;
+    text-decoration: none; transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--cream); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; gap: 40px; }
+    .hero-visual { display: none; }
+    .section { padding: 60px 24px; }
+    .sample-section { padding: 60px 24px; }
+    .pricing-section { padding: 60px 24px; }
+    .testimonials { padding: 60px 24px; }
+    .how-grid { grid-template-columns: 1fr; }
+    .sample-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .testimonial-grid { grid-template-columns: 1fr; }
+    .faq-section { grid-template-columns: 1fr; padding: 60px 24px; gap: 40px; }
+    .final-cta { padding: 60px 24px; }
+    footer { padding: 30px 24px; flex-direction: column; gap: 16px; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Season<span>Remembered</span></div>
+  <a href="#pricing" class="nav-cta">Get Started</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-badge">End-of-Season Memory Books</div>
+    <h1 class="hero-headline">
+      Every Kid Deserves to Be
+      <em>Remembered.</em>
+    </h1>
+    <p class="hero-sub">
+      Beautiful, personalized memory books for your entire team — ready in <strong>24 hours</strong>. Every player gets their own story, written like they were the star of the season.
+    </p>
+    <div class="hero-actions">
+      <a href="#pricing" class="btn-primary">Create Your Book</a>
+      <a href="#samples" class="btn-ghost">See sample profiles →</a>
+    </div>
+    <div class="hero-social-proof">
+      <div class="avatars">
+        <div class="avatar">👩</div>
+        <div class="avatar">👨</div>
+        <div class="avatar">👩</div>
+        <div class="avatar">👨</div>
+      </div>
+      <div class="social-text">
+        <strong>Loved by 200+ coaches & team parents</strong>
+        Parents say it made them cry. In a good way.
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div style="position: relative; padding: 30px 40px 30px 20px;">
+
+      <div class="floating-badge top-right">
+        <div class="badge-emoji">⚡</div>
+        <div class="badge-label">Ready in 24hrs</div>
+        <div class="badge-sub">Just fill in the form</div>
+      </div>
+
+      <div class="floating-badge bottom-left">
+        <div class="badge-emoji">❤️</div>
+        <div class="badge-label">"My son cried"</div>
+        <div class="badge-sub">— Team Parent, IL</div>
+      </div>
+
+      <div class="book-mockup">
+        <div class="book-cover">
+          <div class="book-cover-number">⚾</div>
+          <div class="book-cover-tag">2025 Season</div>
+          <div class="book-cover-title">Fort Atkinson<br>Fury</div>
+          <div class="book-cover-sub">Little League Baseball</div>
+          <div class="book-cover-season">Spring 2025 · 14-2</div>
+        </div>
+        <div class="book-pages">
+          <div class="player-entry">
+            <div class="player-number-badge">7</div>
+            <div>
+              <div class="player-name-line">
+                Jake Morrison
+                <span class="player-pos">SS</span>
+              </div>
+              <div class="player-text-preview">From the first crack of his bat in March to the final out of the championship game, Jake was the heartbeat of this infield...</div>
+            </div>
+          </div>
+          <div class="player-entry">
+            <div class="player-number-badge">12</div>
+            <div>
+              <div class="player-name-line">
+                Mia Rodriguez
+                <span class="player-pos">P / CF</span>
+              </div>
+              <div class="player-text-preview">Ask any opposing coach what they feared most about the Fury, and the answer was always the same: number twelve...</div>
+            </div>
+          </div>
+          <div class="player-entry">
+            <div class="player-number-badge">3</div>
+            <div>
+              <div class="player-name-line">
+                Tyler Chen
+                <span class="player-pos">1B</span>
+              </div>
+              <div class="player-text-preview">Tyler brought more than a steady glove to first base — he brought an energy that lifted the whole dugout...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="section-label">How It Works</div>
+  <h2 class="section-title">Three steps.<br>One book they'll keep forever.</h2>
+  <p class="section-sub">No design skills needed. No hours of writing. Just fill in the details and we handle everything.</p>
+
+  <div class="how-grid">
+    <div class="how-step">
+      <div class="step-num">01</div>
+      <span class="step-icon">📋</span>
+      <div class="step-title">Fill In Your Roster</div>
+      <div class="step-text">Enter each player's name, position, jersey number, season stats, a few fun facts, and an optional note from their parents. Takes about 15 minutes for a full team.</div>
+    </div>
+    <div class="how-step">
+      <div class="step-num">02</div>
+      <span class="step-icon">✨</span>
+      <div class="step-title">We Write Every Profile</div>
+      <div class="step-text">Our AI writes a warm, specific, 150-word profile for every single player — unique to them, not generic. Reads like it was written by someone who watched every game.</div>
+    </div>
+    <div class="how-step">
+      <div class="step-num">03</div>
+      <span class="step-icon">📖</span>
+      <div class="step-title">Print & Hand Out</div>
+      <div class="step-text">Download your print-ready PDF or let us ship physical copies straight to you. Hand them out at the end-of-season party and watch the parents' faces.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SAMPLE PROFILES -->
+<section class="sample-section" id="samples">
+  <div class="section-label">Sample Profiles</div>
+  <h2 class="section-title">This is what your<br>kids will read.</h2>
+  <p class="section-sub">Real sample outputs — specific, warm, and written like they actually matter. Because they do.</p>
+
+  <div class="sample-grid">
+    <div class="sample-card">
+      <div class="sample-player-header">
+        <div class="sample-player-num">7</div>
+        <div>
+          <div class="sample-player-name">Jake Morrison</div>
+          <div class="sample-player-pos">#7 · Shortstop · Baseball</div>
+        </div>
+      </div>
+      <p class="sample-text">From the first crack of his bat in March to the final out of the championship game, Jake Morrison was the quiet heartbeat of this infield. Playing shortstop with a maturity far beyond his years, Jake committed just two errors in eighteen games — a stat that tells you something, but not everything. What the stat sheet can't capture is the way he'd call off the second baseman with a calm "I got it" that settled the whole infield, or how he'd be first to the mound when a pitcher needed a word. His .385 average was impressive. His leadership was unforgettable. Jake, your love of post-game pizza is already legendary, but what this team will remember most is that you always played like the team was counting on you — because they were.</p>
+      <div class="sample-sport-tag">⚾ Little League Baseball</div>
+    </div>
+
+    <div class="sample-card">
+      <div class="sample-player-header">
+        <div class="sample-player-num" style="background:#2d5a27">9</div>
+        <div>
+          <div class="sample-player-name">Sofia Patel</div>
+          <div class="sample-player-pos">#9 · Midfielder · Soccer</div>
+        </div>
+      </div>
+      <p class="sample-text">Sofia Patel runs like she has something to prove, and she usually does. Stationed in the center of the park, she covered more grass this season than anyone on the roster — her coach's stats showing she averaged 5.4 miles per game across twelve matches. But raw distance doesn't tell the Sofia Patel story. It's the recovery sprint at minute seventy-eight when everyone else was fading. It's the dropped shoulder that sent defenders the wrong way so many times this fall. Sofia racked up six assists and three goals this season, but ask her teammates what her best quality was and they'll say the same thing: she made everyone around her better. She wants to play in college one day. Those who watched her this fall already believe she will.</p>
+      <div class="sample-sport-tag">⚽ Youth Soccer</div>
+    </div>
+
+    <div class="sample-card">
+      <div class="sample-player-header">
+        <div class="sample-player-num" style="background:#7f1d1d">44</div>
+        <div>
+          <div class="sample-player-name">Marcus Williams</div>
+          <div class="sample-player-pos">#44 · Running Back · Football</div>
+        </div>
+      </div>
+      <p class="sample-text">There's a certain type of player who doesn't just run through a hole — they create one where none existed. Marcus Williams is that player. In nine games this fall, Marcus rushed for 612 yards and seven touchdowns, numbers that alone would earn a spot in any memory book. But what defines Marcus's season isn't the touchdowns. It's the way he'd walk back to the huddle after a big hit and tap his helmet twice — his signal that he was fine, the team was fine, they were all fine. His teammates knew it meant: stay in it. Marcus is the kind of kid who will be somebody's favorite memory of youth football for the rest of their lives. His parents put it best: "He plays the game the way we want him to live his life."</p>
+      <div class="sample-sport-tag">🏈 Youth Football</div>
+    </div>
+
+    <div class="sample-card">
+      <div class="sample-player-header">
+        <div class="sample-player-num" style="background:#1e3a8a">23</div>
+        <div>
+          <div class="sample-player-name">Emma Thornton</div>
+          <div class="sample-player-pos">#23 · Point Guard · Basketball</div>
+        </div>
+      </div>
+      <p class="sample-text">Some players score. Some players pass. Emma Thornton does both, but what she really does is see the game two seconds before everyone else. As the starting point guard for all fourteen games this winter, Emma averaged 11 points and 7 assists per outing — a combination that put her among the best in the league at her age. She spent most of her pregame routine drawing plays on the locker room whiteboard, which her coach noticed and started incorporating into their actual gameplan. Her lucky number is 23 and her pregame ritual involves exactly four songs, in order, every time. Emma dreams of coaching one day. Watch her run a pick-and-roll at thirteen years old and you'll understand why she'd be extraordinary at it.</p>
+      <div class="sample-sport-tag">🏀 Youth Basketball</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div style="text-align: center; margin-bottom: 0;">
+    <div class="section-label">Simple Pricing</div>
+    <h2 class="section-title">One team. One price.<br>Memories that last forever.</h2>
+    <p class="section-sub" style="margin: 0 auto;">No subscription. No per-player fees. Pay once, download instantly.</p>
+  </div>
+
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="pricing-name">Digital</div>
+      <div class="pricing-price"><sup>$</sup>97</div>
+      <div class="pricing-desc">Print-ready PDF delivered in 24 hours. Perfect for Staples or home printing.</div>
+      <ul class="pricing-features">
+        <li>Personalized profile for every player</li>
+        <li>Coach intro letter</li>
+        <li>Season recap narrative</li>
+        <li>Your choice of 4 design themes</li>
+        <li>Print-ready PDF (8.5×11)</li>
+        <li>Unlimited downloads</li>
+      </ul>
+      <a href="#" class="btn-pricing">Get Digital Book</a>
+    </div>
+
+    <div class="pricing-card featured">
+      <div class="pricing-tag">Most Popular</div>
+      <div class="pricing-name">Printed & Shipped</div>
+      <div class="pricing-price"><sup>$</sup>197</div>
+      <div class="pricing-desc">Professional print copies shipped to your door, ready to hand out at the party.</div>
+      <ul class="pricing-features">
+        <li>Everything in Digital, plus:</li>
+        <li>25 professionally printed copies</li>
+        <li>Spiral-bound or saddle-stitched</li>
+        <li>Full-color throughout</li>
+        <li>Shipped in 3–5 business days</li>
+        <li>Extra copies at $6 each</li>
+      </ul>
+      <a href="#" class="btn-pricing">Get Printed Books</a>
+    </div>
+
+    <div class="pricing-card">
+      <div class="pricing-name">Premium Yearbook</div>
+      <div class="pricing-price"><sup>$</sup>297</div>
+      <div class="pricing-desc">The full experience — includes a time capsule letter for each player to open at graduation.</div>
+      <ul class="pricing-features">
+        <li>Everything in Printed, plus:</li>
+        <li>Time capsule letter per player</li>
+        <li>Custom team cover photo page</li>
+        <li>Extended 250-word profiles</li>
+        <li>Digital slideshow video add-on</li>
+        <li>Priority 12-hour turnaround</li>
+      </ul>
+      <a href="#" class="btn-pricing">Get Premium Book</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div style="text-align: center;">
+    <div class="section-label">What Parents Are Saying</div>
+    <h2 class="section-title">The reaction at the<br>end-of-season party.</h2>
+  </div>
+
+  <div class="testimonial-grid">
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"I ordered this on a whim and I am so glad I did. My son read his profile four times on the way home. He asked me to frame it. This is going on his wall."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">👩</div>
+        <div>
+          <div class="author-name">Jennifer M.</div>
+          <div class="author-role">Baseball mom · Naperville, IL</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"As a coach I've done end-of-season speeches for 12 years. This is the first time I've seen every single parent get emotional at the same time. The profiles were that good."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">👨</div>
+        <div>
+          <div class="author-name">Coach Dave T.</div>
+          <div class="author-role">Youth soccer · Madison, WI</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"I sent it to my daughter's grandparents who live across the country. My mother-in-law called me crying. Worth every penny and then some."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">👩</div>
+        <div>
+          <div class="author-name">Rachel K.</div>
+          <div class="author-role">Softball mom · Fort Atkinson, WI</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div>
+    <div class="section-label">Questions</div>
+    <h2 class="section-title">Everything you need to know.</h2>
+    <p class="section-sub">Still have a question? Email us at hello@seasonremembered.com</p>
+  </div>
+
+  <div class="faq-list" id="faq">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">How long does it take to fill out the form? <span class="arrow">▼</span></div>
+      <div class="faq-a">Most team parents finish the entire roster in 15–20 minutes. The fun facts and parent quotes are optional but they make the profiles significantly better, so it's worth taking an extra few minutes.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">What if I don't have all the stats? <span class="arrow">▼</span></div>
+      <div class="faq-a">No problem. Stats help, but they're optional. A season highlight, a memorable moment, or even just a description of how the player contributed works just as well. The profiles are built around personality as much as performance.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Can I edit the profiles once they're generated? <span class="arrow">▼</span></div>
+      <div class="faq-a">Yes. You get a chance to review every profile before your final PDF is produced. If something doesn't sound right, just let us know and we'll revise it.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">What sports do you support? <span class="arrow">▼</span></div>
+      <div class="faq-a">Baseball, softball, soccer, football, basketball, lacrosse, hockey, volleyball, and more. If your sport isn't listed, reach out — we handle custom requests all the time.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">How many players can I include? <span class="arrow">▼</span></div>
+      <div class="faq-a">There's no hard limit. Most teams run 12–20 players and the pricing covers any size. Large travel programs with multiple rosters should contact us for custom pricing.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Is there a money-back guarantee? <span class="arrow">▼</span></div>
+      <div class="faq-a">Absolutely. If you're not happy with the profiles, we'll rewrite them. If you're still not happy, we'll give you a full refund. We want parents to cry happy tears, not regret the purchase.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="section-label">Don't Let the Season End Without It</div>
+  <h2 class="final-cta-title">The game ends.<br>The memory doesn't have to.</h2>
+  <p class="final-cta-sub">Every parent on your team will thank you. Every kid will remember it. Takes 15 minutes to order.</p>
+  <a href="#pricing" class="btn-primary">Create Your Memory Book</a>
+  <p class="final-guarantee">30-day money-back guarantee · No subscription · Delivered in 24 hours</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Season<span>Remembered</span></div>
+  <div class="footer-links">
+    <a href="#">How It Works</a>
+    <a href="#samples">Sample Profiles</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#">Contact</a>
+    <a href="#">Privacy</a>
+  </div>
+</footer>
+
+<script>
+  function toggleFaq(el) {
+    const item = el.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.how-step, .sample-card, .pricing-card, .testimonial-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
