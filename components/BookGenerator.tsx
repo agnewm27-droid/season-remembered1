@@ -2,7 +2,7 @@
 
 import type { PlayerInput, TeamData } from "@/lib/types";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 
 const SPORTS = [
   "Baseball",
@@ -31,6 +31,28 @@ const emptyPlayer = (): PlayerInput => ({
   fact3: "",
   parentQuote: "",
 });
+
+function playerHasAnyContent(p: PlayerInput): boolean {
+  return [
+    p.name,
+    p.number,
+    p.position,
+    p.stat,
+    p.fact1,
+    p.fact2,
+    p.fact3,
+    p.parentQuote,
+  ].some((s) => s.trim().length > 0);
+}
+
+/** Empty spare rows are ignored; every row with any data must have name + position. */
+function isRosterStepValid(players: PlayerInput[]): boolean {
+  const active = players.filter(playerHasAnyContent);
+  if (active.length === 0) return false;
+  return active.every(
+    (p) => p.name.trim().length > 0 && p.position.trim().length > 0
+  );
+}
 
 function StepIndicator({ current, total }: { current: number; total: number }) {
   return (
@@ -451,11 +473,11 @@ function Step2({
   onBack,
 }: {
   players: PlayerInput[];
-  setPlayers: (p: PlayerInput[]) => void;
+  setPlayers: Dispatch<SetStateAction<PlayerInput[]>>;
   onNext: () => void;
   onBack: () => void;
 }) {
-  const valid = players.every((p) => p.name && p.position);
+  const valid = isRosterStepValid(players);
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div>
@@ -471,9 +493,6 @@ function Step2({
           display: "flex",
           flexDirection: "column",
           gap: 10,
-          maxHeight: 420,
-          overflowY: "auto",
-          paddingRight: 4,
         }}
       >
         {players.map((p, i) => (
@@ -482,15 +501,19 @@ function Step2({
             player={p}
             index={i}
             onChange={(updated) =>
-              setPlayers(players.map((pl, idx) => (idx === i ? updated : pl)))
+              setPlayers((prev) =>
+                prev.map((pl, idx) => (idx === i ? updated : pl))
+              )
             }
-            onRemove={() => setPlayers(players.filter((_, idx) => idx !== i))}
+            onRemove={() =>
+              setPlayers((prev) => prev.filter((_, idx) => idx !== i))
+            }
           />
         ))}
       </div>
       <button
         type="button"
-        onClick={() => setPlayers([...players, emptyPlayer()])}
+        onClick={() => setPlayers((prev) => [...prev, emptyPlayer()])}
         style={{
           padding: "11px 0",
           borderRadius: 10,
