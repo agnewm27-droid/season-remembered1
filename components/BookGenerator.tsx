@@ -2,7 +2,7 @@
 
 import type { PlayerInput, TeamData } from "@/lib/types";
 import Link from "next/link";
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { useMemo, useState, type Dispatch, type SetStateAction } from "react";
 
 const SPORTS = [
   "Baseball",
@@ -52,6 +52,36 @@ function isRosterStepValid(players: PlayerInput[]): boolean {
   return active.every(
     (p) => p.name.trim().length > 0 && p.position.trim().length > 0
   );
+}
+
+type CompletionLevel = "empty" | "red" | "yellow" | "green";
+
+function completionLevel(p: PlayerInput): CompletionLevel {
+  const name = p.name.trim().length > 0;
+  const position = p.position.trim().length > 0;
+  const stat = p.stat.trim().length > 0;
+  const facts = [p.fact1, p.fact2, p.fact3].map((s) => s.trim().length > 0);
+  const anyFact = facts.some(Boolean);
+  const allFacts = facts.every(Boolean);
+
+  if (!playerHasAnyContent(p)) return "empty";
+  if (name && position && stat && allFacts) return "green";
+  if (name && position && anyFact) return "yellow";
+  if (name) return "red";
+  return "empty";
+}
+
+function filledFieldsBeyondNameCount(p: PlayerInput): number {
+  const fields = [
+    p.number,
+    p.position,
+    p.stat,
+    p.fact1,
+    p.fact2,
+    p.fact3,
+    p.parentQuote,
+  ];
+  return fields.reduce((acc, v) => (v.trim().length > 0 ? acc + 1 : acc), 0);
 }
 
 function StepIndicator({ current, total }: { current: number; total: number }) {
@@ -275,8 +305,18 @@ function PlayerCard({
   onRemove: () => void;
 }) {
   const [open, setOpen] = useState(index === 0);
+  const [showFunFactIdeas, setShowFunFactIdeas] = useState(false);
   const f = (field: keyof PlayerInput, val: string) =>
     onChange({ ...player, [field]: val });
+  const level = completionLevel(player);
+  const dotColor =
+    level === "green"
+      ? "#16a34a"
+      : level === "yellow"
+        ? "#f59e0b"
+        : level === "red"
+          ? "#ef4444"
+          : "#292524";
 
   return (
     <div
@@ -330,6 +370,26 @@ function PlayerCard({
           </span>
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <span
+            title={
+              level === "green"
+                ? "Great detail"
+                : level === "yellow"
+                  ? "Pretty good — add stats/facts for best results"
+                  : level === "red"
+                    ? "Add position + details for a better profile"
+                    : "Add player details"
+            }
+            aria-label="Player info completeness"
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: 999,
+              background: dotColor,
+              boxShadow: "0 0 0 2px #0c0a09",
+              flexShrink: 0,
+            }}
+          />
           {index > 0 && (
             <span
               role="button"
@@ -390,21 +450,44 @@ function PlayerCard({
               label="Season Highlight / Stat"
               value={player.stat}
               onChange={(v) => f("stat", v)}
-              placeholder="Hit .420, 3 home runs"
+              placeholder="Hit .380, made the diving catch that won the championship game"
             />
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <label
-              style={{
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.12em",
-                color: "#a8a29e",
-                textTransform: "uppercase",
-              }}
-            >
-              3 Fun Facts
-            </label>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+              <label
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: "0.12em",
+                  color: "#a8a29e",
+                  textTransform: "uppercase",
+                }}
+              >
+                3 Fun Facts
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowFunFactIdeas((v) => !v)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  padding: 0,
+                  color: "#78716c",
+                  fontSize: 12,
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                  textDecoration: "underline",
+                }}
+              >
+                Need ideas?
+              </button>
+            </div>
+            {showFunFactIdeas ? (
+              <div style={{ fontSize: 12, color: "#78716c", lineHeight: 1.5 }}>
+                Favorite post-game food · Nickname · Pregame ritual · Future dream · Funniest moment this season · What teammates would say about them
+              </div>
+            ) : null}
             {(["fact1", "fact2", "fact3"] as const).map((f2, fi) => (
               <input
                 key={f2}
@@ -412,9 +495,9 @@ function PlayerCard({
                 onChange={(e) => f(f2, e.target.value)}
                 placeholder={
                   [
-                    "Loves pizza after every game",
-                    "Has a lucky batting glove ritual",
-                    "Dreams of playing in college",
+                    "Has a pregame ritual of eating exactly two granola bars",
+                    "Wants to play college ball at Wisconsin",
+                    "The team calls him 'Wheels' because of his speed",
                   ][fi]
                 }
                 style={{
@@ -445,7 +528,7 @@ function PlayerCard({
             <textarea
               value={player.parentQuote}
               onChange={(e) => f("parentQuote", e.target.value)}
-              placeholder="We are so proud of how hard you worked this season..."
+              placeholder="We are so proud of the leader you've become this season"
               rows={2}
               style={{
                 background: "#0c0a09",
@@ -487,6 +570,9 @@ function Step2({
         <p style={{ color: "#78716c", marginTop: 6, fontSize: 14 }}>
           Add each player — the more detail, the better the profiles
         </p>
+      </div>
+      <div style={{ fontSize: 13, color: "#a8a29e", lineHeight: 1.6 }}>
+        The more detail you add, the more personal and memorable each profile will be. Stats, personality quirks, and inside jokes make the best stories.
       </div>
       <div
         style={{
@@ -940,12 +1026,23 @@ export default function BookGenerator() {
   const [profiles, setProfiles] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showGenerateWarning, setShowGenerateWarning] = useState(false);
+  const [pendingGenerate, setPendingGenerate] = useState(false);
+
+  const namedPlayers = useMemo(
+    () => players.filter((p) => p.name.trim().length > 0),
+    [players]
+  );
+
+  const playersMissingDetails = useMemo(() => {
+    return namedPlayers.filter((p) => filledFieldsBeyondNameCount(p) < 3);
+  }, [namedPlayers]);
 
   const generate = async () => {
     setLoading(true);
     setError("");
     try {
-      const roster = players.filter((p) => p.name);
+      const roster = namedPlayers;
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -973,6 +1070,15 @@ export default function BookGenerator() {
     }
   };
 
+  const requestGenerate = () => {
+    if (loading) return;
+    if (!pendingGenerate && playersMissingDetails.length > 0) {
+      setShowGenerateWarning(true);
+      return;
+    }
+    void generate();
+  };
+
   const reset = () => {
     setStep(0);
     setTeamData({
@@ -986,9 +1092,9 @@ export default function BookGenerator() {
     setTheme("baseball");
     setProfiles({});
     setError("");
+    setShowGenerateWarning(false);
+    setPendingGenerate(false);
   };
-
-  const namedPlayers = players.filter((p) => p.name);
 
   return (
     <>
@@ -1011,6 +1117,91 @@ export default function BookGenerator() {
           padding: "40px 16px",
         }}
       >
+        {showGenerateWarning ? (
+          <div
+            role="dialog"
+            aria-modal="true"
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.55)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 16,
+              zIndex: 50,
+            }}
+            onClick={() => setShowGenerateWarning(false)}
+          >
+            <div
+              style={{
+                width: "100%",
+                maxWidth: 520,
+                background: "#111110",
+                border: "1px solid #292524",
+                borderRadius: 16,
+                padding: 20,
+                boxShadow: "0 24px 80px rgba(0,0,0,0.7)",
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div style={{ fontWeight: 800, color: "#fafaf9", fontSize: 16 }}>
+                A few players are missing details
+              </div>
+              <div style={{ marginTop: 8, color: "#a8a29e", fontSize: 13, lineHeight: 1.6 }}>
+                Their profiles will be more generic. Want to go back and add more, or generate now?
+              </div>
+              <div style={{ marginTop: 10, color: "#78716c", fontSize: 12 }}>
+                Missing details for: {playersMissingDetails.map((p) => p.name.trim()).join(", ")}
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 14 }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowGenerateWarning(false);
+                    setPendingGenerate(false);
+                    setStep(1);
+                  }}
+                  style={{
+                    padding: "12px 0",
+                    borderRadius: 10,
+                    border: "1px solid #292524",
+                    background: "transparent",
+                    color: "#a8a29e",
+                    fontWeight: 700,
+                    fontSize: 14,
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  Add More Details
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowGenerateWarning(false);
+                    setPendingGenerate(true);
+                    void generate();
+                  }}
+                  style={{
+                    padding: "12px 0",
+                    borderRadius: 10,
+                    border: "none",
+                    background: "#f59e0b",
+                    color: "#1c1917",
+                    fontWeight: 800,
+                    fontSize: 14,
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  Generate Anyway
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
         <div
           style={{
             width: "100%",
@@ -1096,7 +1287,7 @@ export default function BookGenerator() {
             <Step3
               theme={theme}
               setTheme={setTheme}
-              onGenerate={generate}
+              onGenerate={requestGenerate}
               onBack={() => setStep(1)}
               loading={loading}
             />
